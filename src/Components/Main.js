@@ -1,7 +1,7 @@
 import React from 'react';
-import '../CSS/Register.css';
+import '../CSS/Login.css';
 
-class Register extends React.Component
+class Main extends React.Component
 {
     constructor(props)
     {
@@ -11,9 +11,10 @@ class Register extends React.Component
 
     render()
     {
-        // return jsx here
-        return ;
+        return (
+            <h1>Hello World</h1>
+        )
     }
 }
 
-export default Register;
+export default Main;
