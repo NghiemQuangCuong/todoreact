@@ -1,7 +1,7 @@
 import React from 'react';
 import '../CSS/Register.css';
 
-class Register extends React.Component()
+class Register extends React.Component
 {
     constructor(props)
     {
@@ -12,6 +12,7 @@ class Register extends React.Component()
     render()
     {
         // return jsx here
+        return ;
     }
 }
 
