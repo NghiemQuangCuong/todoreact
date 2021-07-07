@@ -54,6 +54,9 @@ class Task extends React.Component{
                 <span className='taskName'>
                     {taskName}
                 </span>
+                <span>
+                    <button type='button' >Edit</button>
+                </span>
             </div>
         )
     }
@@ -125,7 +128,6 @@ class Main extends React.Component
                 <SearchBox />
                 <TasksList />
             </div>
-            
         )
     }
 }
