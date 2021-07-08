@@ -33,13 +33,15 @@ class InsertTask extends React.Component{
             finished: false,
             taskName: taskEntered,
             category: '',
+            createTime: new Date(Date.now()).toLocaleString(),
             alarm: '',
             priority: '0',
-            objectId: 'd19nduoeq83'
+            objectId: Math.random()*100
         }
         taskList.push(taskToAdd)
         parent.setState({taskList})
         this.setState({taskEntered: ''});
+        
     }
 
     render()
@@ -168,7 +170,7 @@ class TasksList extends React.Component{
     render()
     {
         let taskList = this.props.taskList;
-        taskList.sort(sortChoosen);
+        taskList.sort(this.props.sortChoose);
 
         return (
             <div className='taskList'>
@@ -220,6 +222,78 @@ class SearchBox extends React.Component{
     }
 }
 
+class SortChoose extends React.Component{
+    constructor(props)
+    {
+        super(props);
+        this.props = props;
+
+        this.state = {
+            sortChoose: 'lately'
+        }
+
+        this.setButtonClass = this.setButtonClass.bind(this);
+        this.onButtonClick = this.onButtonClick.bind(this);
+    }
+
+    setButtonClass(type)
+    {
+        if (type === this.state.sortChoose)
+            return 'btn btn-primary choose-button btn-lg';
+        else
+            return 'btn btn-outline-primary choose-button';
+    }
+
+    onButtonClick(type)
+    {
+        switch (type)
+        {
+            case 'lately':
+                this.props.parent.setState({sortChoose: latelySort});
+                break;
+            case 'alarm':
+                this.props.parent.setState({sortChoose: timeSort});
+                break;
+            default:
+                this.props.parent.setState({sortChoose: prioritySort});
+        }
+
+        this.setState({
+            sortChoose: type
+        });
+    }
+
+    render()
+    {
+        return (
+            <div className='sort-choose-container'>
+                <div className='sort-choose'>
+                    <button 
+                        type="button" 
+                        className={this.setButtonClass('lately')}
+                        onClick={() => this.onButtonClick('lately')}>
+                        Lately
+                    </button>
+
+                    <button 
+                        type="button" 
+                        className={this.setButtonClass('alarm')}
+                        onClick={() => this.onButtonClick('alarm')}>
+                        Alarm
+                    </button>
+
+                    <button 
+                        type="button" 
+                        className={this.setButtonClass('priority')}
+                        onClick={() => this.onButtonClick('priority')}>
+                        Priority
+                    </button>
+                </div>
+            </div>
+        )
+    }
+}
+
 class Main extends React.Component
 {
     constructor(props)
@@ -229,27 +303,26 @@ class Main extends React.Component
 
         this.state = {
             userName: 'Cuong',
-            taskList: taskList
+            taskList: taskList,
+            sortChoose: latelySort
         }
     }
 
     render()
     {
         const {userName, taskList} = this.state;
-        
+
         return (
             <div className='main'>
                 <Greeting greeting={userName} />
                 <InsertTask parent={this} />
                 <SearchBox parent={this}/>
-                <TasksList taskList={taskList} />
+                <SortChoose parent={this}/>
+                <TasksList taskList={taskList} sortChoose={this.state.sortChoose}/>
             </div>
         )
     }
 }
-
-// default sort choosen
-let sortChoosen = timeSort;
 
 function timeSort(a, b){
     if (a.alarm && !b.alarm)
@@ -271,6 +344,26 @@ function timeSort(a, b){
     return 0;
 }
 
+function latelySort(a, b)
+{
+    const timeA = Date.parse(a.createTime);
+    const timeB = Date.parse(b.createTime);
+    if (timeA > timeB)
+        return -1;
+    if (timeA < timeB)
+        return 1;
+    return 0;
+}
+
+function prioritySort(a, b)
+{
+    if (a.priority > b.priority)
+        return -1;
+    if (a.priority < b.priority)
+        return 1;
+    return timeSort(a, b);
+}
+
 let taskList = [
 {
     finished: false,
@@ -285,6 +378,7 @@ let taskList = [
     finished: true,
     taskName: 'Feed Dog',
     category: 'Daily',
+    createTime: new Date(2021, 6, 7, 9).toLocaleString(),
     alarm: '',
     priority: '1',
     objectId: '234sdfg42'
@@ -293,6 +387,7 @@ let taskList = [
     finished: false,
     taskName: 'Read book',
     category: 'Study',
+    createTime: new Date(2021, 6, 7, 10).toLocaleString(),
     alarm: '',
     priority: '2',
     objectId: '35byq287579'
@@ -301,6 +396,7 @@ let taskList = [
     finished: true,
     taskName: 'Study',
     category: 'Study',
+    createTime: new Date(2021, 6, 7, 11).toLocaleString(),
     alarm: '',
     priority: '2',
     objectId: 'd19nduoeq83'
@@ -309,7 +405,8 @@ let taskList = [
     finished: false,
     taskName: 'Workout',
     category: 'Study',
-    alarm: new Date(2021, 6, 7, 7).toLocaleString(),
+    createTime: new Date(2021, 6, 7, 12).toLocaleString(),
+    alarm: new Date(2021, 6, 9, 12).toLocaleString(),
     priority: '1',
     objectId: 'ad198o3dni'
     }

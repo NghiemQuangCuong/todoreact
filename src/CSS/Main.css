@@ -95,3 +95,12 @@ h1 {
     text-align: center;
     margin: 20px;
 }
+
+.choose-button{
+    margin: 5px;
+}
+
+.sort-choose-container{
+    text-align: center;
+}
+
