@@ -37,14 +37,14 @@ class Login extends React.Component
         console.log('Password');
         console.log(this.state.password);
 
-        const usernameValid = !!this.state.username;
-        const passwordValid = !!this.state.password;
-        // Update the messages
-        this.setState({usernameValid, passwordValid});
+        // const usernameValid = !!this.state.username;
+        // const passwordValid = !!this.state.password;
+        // // Update the messages
+        // this.setState({usernameValid, passwordValid});
 
-        if (usernameValid && passwordValid) {
-            // If the username & password are both valid, submit the form...
-        }
+        // if (usernameValid && passwordValid) {
+        //     // If the username & password are both valid, submit the form...
+        // }
     }
 
     render()
