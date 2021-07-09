@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import '../CSS/Login.css';
+import '../CSS/Register.css';
 
 class Login extends React.Component
 {
@@ -15,7 +15,9 @@ class Login extends React.Component
 
         this.state = {
             usernameValid: true,
+            usernameValid: true,
             passwordValid: true,
+            repasswordValid: true,
         };
     }
 

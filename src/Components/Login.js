@@ -51,15 +51,18 @@ class Login extends React.Component
     {
         // return jsx here
         return (
-            <div className='loginform'>
-                <p>Username</p>
-                <input type="text" className="username" id="username" name="username" onInput={this.onUsernameChange} placeholder="Enter your username"/>
-                {!this.state.usernameValid && <p>Username cannot be blank</p>}
-                <p>Password</p>
-                <input type="password" className="password" id="password" name="password" onInput={this.onPasswordChange} placeholder="Enter your password" type="password"/>
-                {!this.state.passwordValid && <p>Password cannot be blank</p>}
-                <br/>
-                <button onClick={this.sendInfo} type="submit">Login</button>
+            <div className="container">
+                <div className='loginform'>
+                    <h1>Welcome home</h1>
+                    <p className="info">Username</p>
+                    <input type="text" className="username" id="username" name="username" onInput={this.onUsernameChange} placeholder="Enter your username"/>
+                    {!this.state.usernameValid && <p className="alert">Username cannot be blank</p>}
+                    <p className="info">Password</p>
+                    <input type="password" className="password" id="password" name="password" onInput={this.onPasswordChange} placeholder="Enter your password" type="password"/>
+                    {!this.state.passwordValid && <p className="alert">Password cannot be blank</p>}
+                    <br/>
+                    <button className="buttonLogin" onClick={this.sendInfo} type="submit">Login</button>
+                </div>
             </div>
         )
     }
