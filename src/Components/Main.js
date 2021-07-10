@@ -4,7 +4,7 @@ import '../CSS/Main.css';
 function Greeting(props){
     const {greeting} = props;
     return (
-        <h1>Welcome to TodoReact, {greeting}</h1>
+        <h1 className='noselect'>Welcome to TodoReact, {greeting}</h1>
     )
 }
 
@@ -74,11 +74,14 @@ class Task extends React.Component{
             task: this.props.task
         }
 
+        this.month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
         this.getTaskRow = this.getTaskRow.bind(this);
         this.onRowClick = this.onRowClick.bind(this);
         this.onEditClick = this.onEditClick.bind(this);
         this.onDeleteClick = this.onDeleteClick.bind(this);
-        this.checkalarm = this.checkalarm.bind(this);
+        this.formatTime = this.formatTime.bind(this);
+        this.showDetail = this.showDetail.bind(this);
     }
 
     getTaskRow(priority)
@@ -97,7 +100,22 @@ class Task extends React.Component{
     onRowClick(event){
         event.preventDefault();
 
-        console.log('row clicked');
+        if (!this.props.mainComponent.state.detailTask)
+            this.props.mainComponent.setState({
+                detailTask: this.state.task.objectId
+            })
+        else 
+        {
+            if (this.props.mainComponent.state.detailTask === this.state.task.objectId)
+                this.props.mainComponent.setState({
+                    detailTask: ''
+                })
+            else 
+                this.props.mainComponent.setState({
+                    detailTask: this.state.task.objectId
+                })
+        }
+            
     }
 
     onEditClick(event){
@@ -114,48 +132,84 @@ class Task extends React.Component{
         console.log('delete clicked');
     }
 
-    checkalarm(alarm){
-        const title = 'Task ends at: ' + alarm;
-        if (alarm)
-            return (
-                <div 
-                className='material-icons clock' 
-                title={title} 
-                onClick={(event) => event.stopPropagation()}>
-                    schedule
-                </div>
-            )
+    formatTime(string){
+        const date = new Date(Date.parse(string));
+        const day = date.getDate();
+        const month = this.month[date.getMonth()];
+        const hour = (date.getHours() < 10) ? '0' + date.getHours() : date.getHours();
+        const minute = (date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes();
+
+        return day + ' ' + month + ', ' + hour + ':' + minute;
     }
 
-    render()
-    {
-        const {
+    showDetail(){
+        let {
             finished,
             taskName,
+            taskDesciption,
             category,
-            startTime,
+            createTime,
             alarm,
             priority,
             objectId } = this.state.task;
 
+        if (priority === '0')
+            priority = 'Low';
+        else if (priority === '1')
+            priority = 'Medium';
+        else 
+            priority = 'High';
+
+        const detailTask = this.props.mainComponent.state.detailTask;
+        if (detailTask === this.state.task.objectId)
+            return (
+                <div className='detail-box noselect'>
+                    <div><span className='task-property'>Task name:</span> {taskName}</div>
+                    <div><span className='task-property'>Task Description:</span> {taskDesciption}</div>
+                    <hr />
+                    <div><span className='task-property'>Category:</span> {category}</div>
+                    <div><span className='task-property'>Create time:</span> {createTime}</div>
+                    <div><span className='task-property'>Alarm:</span> {alarm}</div>
+                    <div><span className='task-property'>Priority:</span> {priority}</div>
+                </div>
+            )
+        return ;
+    }
+
+    render()
+    {
+        let {
+            taskName,
+            alarm,
+            priority,
+            } = this.state.task;
+
         // class init
         const taskRow = this.getTaskRow(priority);
+        if (alarm)
+            alarm = this.formatTime(alarm);
 
         return (
-            <div className={taskRow} onClick={this.onRowClick}>
-                <div className='taskName noselect' >
-                    {taskName}
-                </div>
-                <div className='icon'>
-                    <div className='material-icons edit-button' onClick={this.onEditClick}>
-                        edit
+            <div>
+                <div className={taskRow} onClick={this.onRowClick}>
+                    <div className='taskName noselect' >
+                        {taskName}
                     </div>
-                    <div className='material-icons delete-button' onClick={this.onDeleteClick}>
-                        remove_circle_outline
+                    <div className='taskTime noselect'>
+                        {alarm}
                     </div>
-                    {this.checkalarm(alarm)}
+                    <div className='icon'>
+                        <div className='material-icons edit-button' onClick={this.onEditClick}>
+                            edit
+                        </div>
+                        <div className='material-icons delete-button' onClick={this.onDeleteClick}>
+                            remove_circle_outline
+                        </div>
+                    </div>
                 </div>
+                {this.showDetail()}
             </div>
+            
         )
     }
 }
@@ -174,7 +228,7 @@ class TasksList extends React.Component{
 
         return (
             <div className='taskList'>
-                {taskList.map(task => <Task task={task} key={task.objectId} />)}
+                {taskList.map(task => <Task task={task} key={task.objectId} mainComponent={this.props.parent}/>)}
             </div>
         )
     }
@@ -304,7 +358,8 @@ class Main extends React.Component
         this.state = {
             userName: 'Cuong',
             taskList: taskList,
-            sortChoose: latelySort
+            sortChoose: latelySort,
+            detailTask: ''
         }
     }
 
@@ -318,7 +373,7 @@ class Main extends React.Component
                 <InsertTask parent={this} />
                 <SearchBox parent={this}/>
                 <SortChoose parent={this}/>
-                <TasksList taskList={taskList} sortChoose={this.state.sortChoose}/>
+                <TasksList taskList={taskList} sortChoose={this.state.sortChoose} parent={this}/>
             </div>
         )
     }
@@ -368,6 +423,7 @@ let taskList = [
 {
     finished: false,
     taskName: 'Buy Food',
+    taskDesciption: 'Buy Food Buy Food Buy Food Buy Food Buy Food Buy Food Buy Food Buy Food',
     category: 'Daily',
     createTime: new Date(2021, 6, 7, 8).toLocaleString(),
     alarm: new Date(2021, 6, 7, 8).toLocaleString(),
@@ -377,6 +433,7 @@ let taskList = [
     {
     finished: true,
     taskName: 'Feed Dog',
+    taskDesciption: 'Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog',
     category: 'Daily',
     createTime: new Date(2021, 6, 7, 9).toLocaleString(),
     alarm: '',
@@ -386,6 +443,7 @@ let taskList = [
     {
     finished: false,
     taskName: 'Read book',
+    taskDesciption: 'Read book Read book Read book Read book Read book Read book Read book',
     category: 'Study',
     createTime: new Date(2021, 6, 7, 10).toLocaleString(),
     alarm: '',
@@ -395,6 +453,7 @@ let taskList = [
     {
     finished: true,
     taskName: 'Study',
+    taskDesciption: 'Study Study Study Study Study Study Study Study Study Study Study Study',
     category: 'Study',
     createTime: new Date(2021, 6, 7, 11).toLocaleString(),
     alarm: '',
@@ -404,6 +463,7 @@ let taskList = [
     {
     finished: false,
     taskName: 'Workout',
+    taskDesciption: 'Workout Workout Workout Workout Workout Workout Workout Workout Workout',
     category: 'Study',
     createTime: new Date(2021, 6, 7, 12).toLocaleString(),
     alarm: new Date(2021, 6, 9, 12).toLocaleString(),

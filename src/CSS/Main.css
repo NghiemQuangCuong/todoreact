@@ -24,22 +24,31 @@
 
 .taskName{
     display: inline-block;
-    width: 65%;
+    width: 55%;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: x-large;
     margin: 10px;
+    text-align: left;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.taskTime{
+    display: inline-block;
+    width: 22%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: large;
     text-align: left;
 }
 
 .edit-button{
     display: inline-block;
-    width: 33%;
+    width: 50%;
     cursor: pointer;
 }
 
 .delete-button{
     display: inline-block;
-    width: 33%;
+    width: 50%;
     cursor: pointer;
 }
 
@@ -51,7 +60,7 @@
 
 .icon{
     display: inline-block;
-    width: 30%;
+    width: 15%;
 }
 
 a {
@@ -104,3 +113,15 @@ h1 {
     text-align: center;
 }
 
+.detail-box{
+    display: inline-block;
+    width: 50%;
+    height: fit-content;
+    margin: 10px;
+    padding: 10px;
+    text-align: left;
+}
+
+.task-property{
+    font-weight: bold;
+}
