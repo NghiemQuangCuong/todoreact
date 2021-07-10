@@ -73,27 +73,44 @@ class Login extends React.Component
     {
         // return jsx here
         return (
-            <div className='signupform'>
-                <p>Username</p>
-                <input type="text" className="username" id="username" name="username" onInput={this.onUsernameChange} placeholder="Enter your username"/>
-                {!this.state.usernameValid && <p>Username cannot be blank</p>}
+           <div className="container">
+                <div className='signupform'>
+                    <div className="info">
+                        <p>Username</p>
+                        <input type="text" className="username" id="username" name="username" onInput={this.onUsernameChange} placeholder="Enter your username"/>
+                        {!this.state.usernameValid && <p className="alert">Username cannot be blank</p>}
+                    </div>
 
-                <p>Username</p>
-                <input type="text" className="name" id="name" name="name" onInput={this.onNameChange} placeholder="Enter your Name"/>
-                {!this.state.nameValid && <p>Name cannot be blank</p>}
+                    <div className="info">
+                        <p>Username</p>
+                        <input type="text" className="name" id="name" name="name" onInput={this.onNameChange} placeholder="Enter your Name"/>
+                        {!this.state.nameValid && <p className="alert">Name cannot be blank</p>}
+                    </div>
 
-                <p>Password</p>
-                <input type="password" className="password" id="password" name="password" onInput={this.onPasswordChange} placeholder="Enter your password" type="password"/>
-                {!this.state.passwordValid && <p>Password cannot be blank</p>}
+                    <div>
+                        <p className="info">Password</p>
+                        <input type="password" className="password" id="password" name="password" onInput={this.onPasswordChange} placeholder="Enter your password" type="password"/>
+                        {!this.state.passwordValid && <p className="alert">Password cannot be blank</p>}
+                    </div>
 
-                <p>Retype password</p>
-                <input type="repassword" className="repassword" id="repassword" name="repassword" onInput={this.onRepasswordChange} placeholder="Re enter your password" type="password"/>
-                {!this.state.repasswordValid && <p>Password cannot be blank</p>}
+                    <div>
+                        <p className="info">Retype password</p>
+                        <input type="repassword" className="repassword" id="repassword" name="repassword" onInput={this.onRepasswordChange} placeholder="Re enter your password" type="password"/>
+                        {!this.state.repasswordValid && <p className="alert">Password cannot be blank</p>}
+                    </div>
 
-                <br/>
 
-                <button onClick={this.sendInfo} type="submit">Sign Up</button>
-            </div>
+                    <div>
+                        <span>
+
+                        </span>
+
+                        <span className="button">
+                            <button className="button" onClick={this.sendInfo} type="submit">Sign Up</button>
+                        </span>
+                    </div>
+                </div>
+           </div>
         )
     }
 }
