@@ -1,5 +1,7 @@
 import React from 'react';
 import '../CSS/Main.css';
+import {Modal, Button} from 'react-bootstrap'
+
 
 function Greeting(props){
     const {greeting} = props;
@@ -71,7 +73,7 @@ class Task extends React.Component{
         this.props = props;
 
         this.state = {
-            task: this.props.task
+            task: this.props.task,
         }
 
         this.month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -115,14 +117,15 @@ class Task extends React.Component{
                     detailTask: this.state.task.objectId
                 })
         }
-            
     }
 
     onEditClick(event){
         event.preventDefault();
         event.stopPropagation()
 
-        console.log('edit clicked');
+        this.props.mainComponent.setState({
+            editBox: this.state.task.objectId
+        });
     }
 
     onDeleteClick(event){
@@ -144,14 +147,13 @@ class Task extends React.Component{
 
     showDetail(){
         let {
-            finished,
             taskName,
-            taskDesciption,
+            taskDescription,
             category,
             createTime,
             alarm,
             priority,
-            objectId } = this.state.task;
+        } = this.state.task;
 
         if (priority === '0')
             priority = 'Low';
@@ -165,7 +167,7 @@ class Task extends React.Component{
             return (
                 <div className='detail-box noselect'>
                     <div><span className='task-property'>Task name:</span> {taskName}</div>
-                    <div><span className='task-property'>Task Description:</span> {taskDesciption}</div>
+                    <div><span className='task-property'>Task Description:</span> {taskDescription}</div>
                     <hr />
                     <div><span className='task-property'>Category:</span> {category}</div>
                     <div><span className='task-property'>Create time:</span> {createTime}</div>
@@ -348,6 +350,149 @@ class SortChoose extends React.Component{
     }
 }
 
+class EditBox extends React.Component{
+    constructor(props)
+    {
+        super(props);
+        this.props = props;
+
+        this.onClose = this.onClose.bind(this);
+        this.setPriority = this.setPriority.bind(this);
+        let task = taskList.find(task => task.objectId === this.props.objectId);
+        let finalAlarm;
+        if (task.alarm)
+        {
+            const date = new Date(Date.parse(task.alarm));
+            const year = date.getFullYear();
+            const day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate();
+            const month = (date.getMonth() + 1 < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+            const hour = (date.getHours() < 10) ? '0' + date.getHours() : date.getHours();
+            const minute = (date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes();
+            finalAlarm = year + '-' + month + '-' + day + 'T' + hour + ':' + minute;
+        }
+
+        this.state = {
+            taskName: task.taskName,
+            taskDescription: task.taskDescription,
+            alarm: finalAlarm,
+            priority: task.priority
+        }
+
+        this.onTaskNameChange = this.onTaskNameChange.bind(this);
+        this.onTaskDescriptionChange = this.onTaskDescriptionChange.bind(this);
+        this.onAlarmChange = this.onAlarmChange.bind(this);
+        this.onPriorityChange = this.onPriorityChange.bind(this);
+        this.onSave = this.onSave.bind(this);
+    }
+
+    onTaskNameChange(event)
+    {
+        this.setState({
+            taskName: event.target.value
+        });
+    }
+
+    onTaskDescriptionChange(event)
+    {
+        this.setState({
+            taskDescription: event.target.value
+        })
+    }
+
+    onAlarmChange(event)
+    {
+        this.setState({
+            alarm: event.target.value
+        })
+    }
+
+    onPriorityChange(event)
+    {
+        this.setState({
+            priority: event.target.value
+        })
+    }
+
+    onSave()
+    {
+        console.log('Task name: ' + this.state.taskName);
+        console.log('Task description: ' + this.state.taskDescription);
+        console.log('Alarm: ' + this.state.alarm);
+        console.log('Priority: ' + this.state.priority);
+
+        this.onClose();
+    }
+
+    onClose()
+    {
+        this.props.parent.setState({
+            editBox: ''
+        })
+    }
+
+    setPriority(priority)
+    {
+        if (priority === this.state.priority)
+            return 'selected'
+        return '';
+    }
+
+
+
+    render(){
+        let {
+            taskName,
+            taskDescription,
+            alarm,
+            priority
+        } = this.state;
+
+        return (
+            <Modal show={true} onHide={this.onClose} centered>
+                <Modal.Header>
+                    <Modal.Title>Edit Task</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form>
+                        <div>
+                            <label>Task name:&nbsp;</label>
+                            <input type='text' defaultValue={taskName} maxLength='120' onChange={this.onTaskNameChange}></input>
+                        </div>
+                        <br />
+                        <div>
+                            <label>Task Description:&nbsp;</label>
+                            <br />
+                            <textarea type='text' cols='30' rows='3' defaultValue={taskDescription} onChange={this.onTaskDescriptionChange} /> 
+                        </div>
+                        <br />
+                        <div>
+                            <label>Alarm:&nbsp;</label>
+                            <input type="datetime-local" defaultValue={alarm} onChange={this.onAlarmChange}></input>
+                        </div>
+                        <br />
+                        <div>
+                            <label>Priority:&nbsp;</label>
+                            <select name='priority' onChange={this.onPriorityChange} defaultValue={priority}>
+                                <option value='0'>Low</option>
+                                <option value='1'>Medium</option>
+                                <option value='2'>High</option>
+                            </select>
+                        </div>
+                    </form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant='primary' onClick = {() => this.onSave()}>
+                        Save Changes
+                    </Button>
+                    <Button variant='secondary' onClick={() => this.onClose()}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        )
+    }
+}
+
 class Main extends React.Component
 {
     constructor(props)
@@ -359,7 +504,8 @@ class Main extends React.Component
             userName: 'Cuong',
             taskList: taskList,
             sortChoose: latelySort,
-            detailTask: ''
+            detailTask: '',
+            editBox: ''
         }
     }
 
@@ -369,6 +515,7 @@ class Main extends React.Component
 
         return (
             <div className='main'>
+                {this.state.editBox ? <EditBox objectId={this.state.editBox} parent={this} /> : null } 
                 <Greeting greeting={userName} />
                 <InsertTask parent={this} />
                 <SearchBox parent={this}/>
@@ -423,7 +570,7 @@ let taskList = [
 {
     finished: false,
     taskName: 'Buy Food',
-    taskDesciption: 'Buy Food Buy Food Buy Food Buy Food Buy Food Buy Food Buy Food Buy Food',
+    taskDescription: 'Buy Food Buy Food Buy Food Buy Food Buy Food Buy Food Buy Food Buy Food',
     category: 'Daily',
     createTime: new Date(2021, 6, 7, 8).toLocaleString(),
     alarm: new Date(2021, 6, 7, 8).toLocaleString(),
@@ -433,7 +580,7 @@ let taskList = [
     {
     finished: true,
     taskName: 'Feed Dog',
-    taskDesciption: 'Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog',
+    taskDescription: 'Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog Feed Dog',
     category: 'Daily',
     createTime: new Date(2021, 6, 7, 9).toLocaleString(),
     alarm: '',
@@ -443,7 +590,7 @@ let taskList = [
     {
     finished: false,
     taskName: 'Read book',
-    taskDesciption: 'Read book Read book Read book Read book Read book Read book Read book',
+    taskDescription: 'Read book Read book Read book Read book Read book Read book Read book',
     category: 'Study',
     createTime: new Date(2021, 6, 7, 10).toLocaleString(),
     alarm: '',
@@ -453,7 +600,7 @@ let taskList = [
     {
     finished: true,
     taskName: 'Study',
-    taskDesciption: 'Study Study Study Study Study Study Study Study Study Study Study Study',
+    taskDescription: 'Study Study Study Study Study Study Study Study Study Study Study Study',
     category: 'Study',
     createTime: new Date(2021, 6, 7, 11).toLocaleString(),
     alarm: '',
@@ -463,7 +610,7 @@ let taskList = [
     {
     finished: false,
     taskName: 'Workout',
-    taskDesciption: 'Workout Workout Workout Workout Workout Workout Workout Workout Workout',
+    taskDescription: 'Workout Workout Workout Workout Workout Workout Workout Workout Workout',
     category: 'Study',
     createTime: new Date(2021, 6, 7, 12).toLocaleString(),
     alarm: new Date(2021, 6, 9, 12).toLocaleString(),
