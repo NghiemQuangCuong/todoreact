@@ -130,9 +130,17 @@ class Task extends React.Component{
 
     onDeleteClick(event){
         event.preventDefault();
-        event.stopPropagation()
+        event.stopPropagation();
 
-        console.log('delete clicked');
+        taskList = taskList.filter(task => {
+            if (task.objectId === this.state.task.objectId)
+                return false;
+            return true;
+        })
+
+        this.props.mainComponent.setState({
+            taskList: taskList
+        })
     }
 
     formatTime(string){
@@ -149,7 +157,6 @@ class Task extends React.Component{
         let {
             taskName,
             taskDescription,
-            category,
             createTime,
             alarm,
             priority,
@@ -169,7 +176,6 @@ class Task extends React.Component{
                     <div><span className='task-property'>Task name:</span> {taskName}</div>
                     <div><span className='task-property'>Task Description:</span> {taskDescription}</div>
                     <hr />
-                    <div><span className='task-property'>Category:</span> {category}</div>
                     <div><span className='task-property'>Create time:</span> {createTime}</div>
                     <div><span className='task-property'>Alarm:</span> {alarm}</div>
                     <div><span className='task-property'>Priority:</span> {priority}</div>
