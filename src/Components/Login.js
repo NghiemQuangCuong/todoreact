@@ -57,13 +57,13 @@ class Login extends React.Component
                         <h1>Welcome, Travellers!</h1>
                     </div>
                     
-                    <div>
+                    <div className="content1">
                         <p className="info">Username</p>
                         <input type="text" className="username" id="username" name="username" onInput={this.onUsernameChange} placeholder="Enter your username"/>
                     {!this.state.usernameValid && <p className="alert">Username cannot be blank!!!</p>}
                     </div>
                     
-                    <div>
+                    <div className="content2">
                         <p className="info">Password</p>
                         <input type="password" className="password" id="password" name="password" onInput={this.onPasswordChange} placeholder="Enter your password" type="password"/>
                         {!this.state.passwordValid && <p className="alert">Password cannot be blank!!!</p>}

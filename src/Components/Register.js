@@ -15,7 +15,7 @@ class Login extends React.Component
 
         this.state = {
             usernameValid: true,
-            usernameValid: true,
+            nameValid: true,
             passwordValid: true,
             repasswordValid: true,
         };
@@ -53,8 +53,8 @@ class Login extends React.Component
         console.log('Username:');
         console.log(this.state.username);
 
-        console.log('Username:');
-        console.log(this.state.username);
+        console.log('Name:');
+        console.log(this.state.name);
 
         console.log('Password');
         console.log(this.state.password);
@@ -82,7 +82,7 @@ class Login extends React.Component
                     </div>
 
                     <div className="info">
-                        <p>Username</p>
+                        <p>Name</p>
                         <input type="text" className="name" id="name" name="name" onInput={this.onNameChange} placeholder="Enter your Name"/>
                         {!this.state.nameValid && <p className="alert">Name cannot be blank</p>}
                     </div>
